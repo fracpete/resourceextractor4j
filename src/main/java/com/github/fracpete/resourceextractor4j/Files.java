@@ -9,6 +9,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,13 +33,14 @@ public class Files {
    * @param inDir	the resource directory to use
    * @param files	the files to copy (can contain sub-dirs)
    * @param outDir	the output directory
-   * @return		the full path
+   * @throws Exception	if copying fails
    */
-  public static String copyResourcesTo(String inDir, List<String> files, String outDir) {
+  public static void copyResourcesTo(String inDir, List<String> files, String outDir) throws Exception {
     File 	currentFile;
     File 	currentOutDir;
     String 	currentInDir;
     String 	currentName;
+    String	msg;
 
     for (String file : files) {
       currentFile  = new File(file);
@@ -51,12 +53,11 @@ public class Files {
 	copyResourceTo(inDir + "/" + (currentInDir == null ? "" : currentInDir), currentName, currentOutDir.getAbsolutePath());
       }
       catch (Exception e) {
-        LOGGER.log(Level.SEVERE, "Failed to copy '" + file + "' to '" + outDir + "'!", e);
-        return "Failed to copy '" + file + "' to '" + outDir + "': " + e;
+        msg = "Failed to copy '" + file + "' from '" + inDir + "' to '" + outDir + "'!";
+        LOGGER.log(Level.SEVERE, msg, e);
+        throw new IOException(msg, e);
       }
     }
-
-    return null;
   }
 
   /**
@@ -66,6 +67,7 @@ public class Files {
    * @param name	the name of the resource
    * @param outDir	the output directory
    * @return		the full path
+   * @throws Exception	if copying fails
    */
   public static String copyResourceTo(String inDir, String name, String outDir) throws Exception {
     String			result;
@@ -76,6 +78,7 @@ public class Files {
     File 			out;
     FileOutputStream 		fos;
     BufferedOutputStream 	bos;
+    String			msg;
 
     result = null;
     is     = null;
@@ -99,8 +102,9 @@ public class Files {
       result = out.getAbsolutePath();
     }
     catch (Exception e) {
-      LOGGER.log(Level.SEVERE, "Copying failed!", e);
-      throw e;
+      msg = "Failed to copy '" + name + "' from '" + inDir + "' to '" + outDir + "'!";
+      LOGGER.log(Level.SEVERE, msg, e);
+      throw new IOException(msg, e);
     }
     finally {
       IOUtils.closeQuietly(bis);
