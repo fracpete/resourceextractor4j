@@ -26,16 +26,16 @@ public class Files {
   protected static Logger LOGGER = Logger.getLogger(Files.class.getName());
 
   /**
-   * Copies the specified resources to the output directory.
+   * Extracts the specified resources to the output directory.
    * Sub-directories in the file list get recreated automatically in the
    * output directory.
    *
    * @param inDir	the resource directory to use
    * @param files	the files to copy (can contain sub-dirs)
    * @param outDir	the output directory
-   * @throws Exception	if copying fails
+   * @throws Exception	if extraction fails
    */
-  public static void copyResourcesTo(String inDir, List<String> files, String outDir) throws Exception {
+  public static void extractTo(String inDir, List<String> files, String outDir) throws Exception {
     File 	currentFile;
     File 	currentOutDir;
     String 	currentInDir;
@@ -50,7 +50,7 @@ public class Files {
         currentOutDir = new File(outDir + "/" + (currentInDir == null ? "" : currentInDir));
         if (!currentOutDir.exists())
           currentOutDir.mkdirs();
-	copyResourceTo(inDir + "/" + (currentInDir == null ? "" : currentInDir), currentName, currentOutDir.getAbsolutePath());
+	extractTo(inDir + "/" + (currentInDir == null ? "" : currentInDir), currentName, currentOutDir.getAbsolutePath());
       }
       catch (Exception e) {
         msg = "Failed to copy '" + file + "' from '" + inDir + "' to '" + outDir + "'!";
@@ -61,15 +61,15 @@ public class Files {
   }
 
   /**
-   * Copies the specified resource to the output directory.
+   * Extracts the specified resource to the output directory.
    *
    * @param inDir	the resource directory to use
    * @param name	the name of the resource
    * @param outDir	the output directory
    * @return		the full path
-   * @throws Exception	if copying fails
+   * @throws Exception	if extraction fails
    */
-  public static String copyResourceTo(String inDir, String name, String outDir) throws Exception {
+  public static String extractTo(String inDir, String name, String outDir) throws Exception {
     String			result;
     String			resource;
     InputStream 		is;
