@@ -10,8 +10,8 @@ Little Java library for making it easy to extract/read resources on the classpat
 The `com.github.fracpete.resourceextractor4j.Files` class has the following
 static methods:
 
-* `copyResourceTo` - copies a single resource to an output directory
-* `copyResourcesTo` - copies the resources provided as list to an output directory
+* `extractTo` - copies a single resource to an output directory
+* `extractTo` - copies the resources provided as list to an output directory
   (when resources are in sub-directories, these will get recreated in the output 
   directory)
 
