@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +30,7 @@ public class Content {
   /**
    * Returns all the lines from the resource file.
    *
-   * @return		the lines
+   * @return		the lines, null if failed to read
    */
   public static List<String> readLines(String resource) {
     List<String>    	result;
@@ -52,6 +53,7 @@ public class Content {
     }
     catch (Exception e) {
       LOGGER.log(Level.SEVERE, "Failed to read lines from resource file: " + resource, e);
+      return null;
     }
     finally {
       IOUtils.closeQuietly(br);
@@ -65,7 +67,7 @@ public class Content {
   /**
    * Returns all the bytes from the resource file.
    *
-   * @return		the bytes
+   * @return		the bytes, null if failed to read
    */
   public static byte[] readBytes(String resource) {
     TByteList 		result;
@@ -82,11 +84,39 @@ public class Content {
     }
     catch (Exception e) {
       LOGGER.log(Level.SEVERE, "Failed to read bytes from resource file: " + resource, e);
+      return null;
     }
     finally {
       IOUtils.closeQuietly(in);
     }
 
     return result.toArray();
+  }
+
+  /**
+   * Reads the properties file at the specified location.
+   *
+   * @return		the properties, null if failed to read
+   */
+  public static Properties readProperties(String resource) {
+    Properties 		result;
+    InputStream 	in;
+
+    result = new Properties();
+    in     = null;
+
+    try {
+      in = Content.class.getClassLoader().getResourceAsStream(resource);
+      result.load(in);
+    }
+    catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Failed to read properties from resource file: " + resource, e);
+      return null;
+    }
+    finally {
+      IOUtils.closeQuietly(in);
+    }
+
+    return result;
   }
 }
