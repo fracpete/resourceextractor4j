@@ -11,6 +11,7 @@ import gnu.trove.list.array.TByteArrayList;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -65,6 +66,51 @@ public class Content {
   }
 
   /**
+   * Reads the file as single string.
+   *
+   * @param resource 	the resource to read
+   * @return		the string, null if failed to read
+   */
+  public static String readString(String resource) {
+    byte[]	bytes;
+
+    bytes = readBytes(resource);
+    if (bytes == null)
+      return null;
+
+    try {
+      return new String(bytes);
+    }
+    catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Failed to read string from resource file: " + resource, e);
+      return null;
+    }
+  }
+
+  /**
+   * Reads the file as single string.
+   *
+   * @param resource 	the resource to read
+   * @param charset 	the character set to use
+   * @return		the string, null if failed to read
+   */
+  public static String readString(String resource, Charset charset) {
+    byte[]	bytes;
+
+    bytes = readBytes(resource);
+    if (bytes == null)
+      return null;
+
+    try {
+      return new String(bytes, charset);
+    }
+    catch (Exception e) {
+      LOGGER.log(Level.SEVERE, "Failed to read string (" + charset + ") from resource file: " + resource, e);
+      return null;
+    }
+  }
+
+  /**
    * Returns all the bytes from the resource file.
    *
    * @return		the bytes, null if failed to read
@@ -72,15 +118,17 @@ public class Content {
   public static byte[] readBytes(String resource) {
     TByteList 		result;
     InputStream 	in;
-    int			b;
+    byte[]		buffer;
+    int 		read;
 
     result = new TByteArrayList();
     in     = null;
+    buffer = new byte[4096];
 
     try {
       in  = Content.class.getClassLoader().getResourceAsStream(resource);
-      while ((b = in.read()) != -1)
-	result.add((byte) b);
+      while ((read = in.read(buffer)) > 0)
+	result.add(buffer, 0, read);
     }
     catch (Exception e) {
       LOGGER.log(Level.SEVERE, "Failed to read bytes from resource file: " + resource, e);
