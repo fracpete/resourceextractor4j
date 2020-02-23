@@ -83,14 +83,14 @@ public class IOUtils {
 
   /**
    * Copies the data from the input stream into the output stream.
-   * Uses 8k bytes as buffer.
+   * Uses 4k bytes as buffer.
    *
    * @param in		the input stream to read from
    * @param out		the output stream to write to
    * @throws Exception	if copying fails
    */
   public static void copy(InputStream in, OutputStream out) throws Exception {
-    copy(in, out, 8 * 1024);
+    copy(in, out, 4 * 1024);
   }
 
   /**
@@ -106,7 +106,7 @@ public class IOUtils {
     int		read;
 
     buffer = new byte[bufSize];
-    while ((read = in.read(buffer, 0, bufSize)) != -1)
+    while ((read = in.read(buffer, 0, bufSize)) > 0)
       out.write(buffer, 0, read);
   }
 }
